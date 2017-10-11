@@ -1,173 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>TRavel Itinerary Organizer (TRIO) - Organize your travel in 3 steps...</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-	
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
-    <!--[if lte IE 8]><link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.2/leaflet.ie.css" /><![endif]-->
- 
-	<link rel="stylesheet" href="https://syilmazturk.github.io/TRIO/css/leaflet-sidebar.css" />
-	
-    <style>
-        
-        body {
-            padding: 0;
-            margin: 0;
-        }
-
-        html, body, #map {
-            height: 100%;
-            font: 10pt "Helvetica Neue", Arial, Helvetica, sans-serif;
-        }
-
-        .description {
-            font-style: italic;
-            color: #AAA;
-        }
-		
-		#slidecontainer {
-			width: 100%;
-		}
-
-		.slider {
-			-webkit-appearance: none;
-			width: 100%;
-			height: 15px;
-			border-radius: 5px;
-			background: #d3d3d3;
-			outline: none;
-			opacity: 0.7;
-			-webkit-transition: .2s;
-			transition: opacity .2s;
-		}
-
-		.slider:hover {
-			opacity: 1;
-		}
-
-		.slider::-webkit-slider-thumb {
-			-webkit-appearance: none;
-			appearance: none;
-			width: 25px;
-			height: 25px;
-			border-radius: 50%;
-			background: #0074d9;
-			cursor: pointer;
-		}
-
-		.slider::-moz-range-thumb {
-			width: 25px;
-			height: 25px;
-			border-radius: 50%;
-			background: #0074d9;
-			cursor: pointer;
-		}
-		
-    </style>
-</head>
 <body>
-    <div id="sidebar" class="sidebar collapsed">
-        <!-- Nav tabs -->
-        <div class="sidebar-tabs">
-            <ul role="tablist">
-                <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                <li><a href="#profile" role="tab"><i class="fa fa-user"></i></a></li>
-                <li><a href="https://github.com/syilmazturk/TRIO" role="tab" target="_blank"><i class="fa fa-github"></i></a></li>
-            </ul>
 
-            <ul role="tablist">
-                <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
-            </ul>
-        </div>
+<p>Click the button to get your coordinates.</p>
 
-        <!-- Tab panes -->
-        <div class="sidebar-content">
-            <div class="sidebar-pane" id="home">
-                <h1 class="sidebar-header">
-                    TRavel Itinerary Organizer
-                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-                </h1>
+<button onclick="getLocation()">Try It</button>
 
-				<br>
-				<p>Organize your travel in 3 steps...</p>
-				<br>
-				
-				<input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-				<p>Value: <span id="demo"></span></p>
+<p id="demo"></p>
 
-				<br>
-				<select class="selectpicker" id="poipicker" multiple data-actions-box="true" data-selected-text-format="count"></select>
-				<br>
-				
-                <br>
-				<p class="description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-            </div>
+<script>
+var x = document.getElementById("demo");
 
-            <div class="sidebar-pane" id="profile">
-                <h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-            </div>
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
 
-            <div class="sidebar-pane" id="settings">
-                <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-            </div>
-        </div>
-    </div>
+function showPosition(position) {
+    x.innerHTML = "Latitude: " + position.coords.latitude + 
+    "<br>Longitude: " + position.coords.longitude;
+}
+</script>
 
-    <div id="map" class="sidebar-map"></div>
-
-    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
-    <script src="https://syilmazturk.github.io/TRIO/js/leaflet-sidebar.js"></script>
-
-    <script>
-		$('#myRange').change(function() {
-			alert( $(this).val() );
-			var ilceURL = "http://52.178.201.184:5000/trio/nearestpois/28.937357/41.016546/500";	
-			$.getJSON(ilceURL, function(data){
-				$.each(data, function(i, optgroups) {
-					$.each(optgroups, function(groupName, options) {
-					var $optgroup = $("<optgroup>", {
-						label: groupName
-					});
-					$optgroup.appendTo('#poipicker');
-						$.each(options, function(j, option) {
-							var $option = $("<option>", {
-								text: option.poi_name,
-								value: option.poi_id
-							});
-							$option.appendTo($optgroup);
-						});
-					});
-				});
-			$('#poipicker').selectpicker('refresh');
-			});
-		});
-		
-		$(document).on('input', '#myRange', function() {
-			$('#demo').html( $(this).val() );
-		});
-        
-		var map = L.map('map');
-        map.setView([51.2, 7], 9);
-
-        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: 'Map data &copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        var marker = L.marker([51.2, 7]).addTo(map);
-
-        var sidebar = L.control.sidebar('sidebar').addTo(map);
-    </script>
 </body>
 </html>
